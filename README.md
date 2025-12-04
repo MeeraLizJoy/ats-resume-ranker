@@ -145,7 +145,7 @@ GENAI_GEMINI/
 
 ```
 git clone <your-repo-url>
-cd GENAI_GEMINI/ATS
+cd ATS
 ```
 
 2. **Install dependencies**
