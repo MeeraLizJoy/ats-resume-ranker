@@ -173,6 +173,8 @@ python -m spacy download en_core_web_sm
 ```
 streamlit run app/streamlit_app.py
 ```
+ATS % uvicorn main:app --reload
+frontend % npm start
 
 Then open the URL shown in the terminal (usually `http://localhost:8501`).
 
