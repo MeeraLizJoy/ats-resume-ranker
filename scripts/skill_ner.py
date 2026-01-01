@@ -1,5 +1,5 @@
-#import spacy
-#from spacy.matcher import PhraseMatcher
+import spacy
+from spacy.matcher import PhraseMatcher
 
 nlp = spacy.load("en_core_web_sm")
 
