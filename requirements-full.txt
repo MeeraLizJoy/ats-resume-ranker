@@ -1,0 +1,25 @@
+pandas
+numpy
+matplotlib
+scikit-learn
+jupyter
+streamlit
+sentence-transformers
+faiss-cpu
+pdfplumber
+python-docx
+spacy
+nltk
+python-slugify
+google-generativeai   # For Gemini API integration
+requests
+tqdm
+# openai               # Uncomment ONLY if you want OpenAI features
+pyresparser          # Uncomment if you want ATS-style parsing
+seaborn
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+gunicorn==23.0.0
+pydantic==2.9.2
+gunicorn==23.0.0
