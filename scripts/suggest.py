@@ -2,7 +2,7 @@ import os
 import re
 import pandas as pd
 import numpy as np
-import google.generativeai as genai
+#import google.generativeai as genai
 from dotenv import load_dotenv
 from sklearn.metrics.pairwise import cosine_similarity
 

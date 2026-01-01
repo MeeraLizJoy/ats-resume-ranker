@@ -8,7 +8,7 @@ from docx import Document
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from bs4 import BeautifulSoup
-import google.generativeai as genai
+#import google.generativeai as genai
 from dotenv import load_dotenv
 
 # Load .env and configure Gemini API key
