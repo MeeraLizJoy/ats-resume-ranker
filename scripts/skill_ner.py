@@ -13,27 +13,29 @@ def extract_skills_phrase_match(resume_text, skills_list):
     """
     Extract skills from resume text by matching phrases from skills_list (comma-separated).
     """
-    skills = [s.strip().lower() for s in skills_list.split(",")]
-    matcher = build_skill_matcher(skills)
+    # skills = [s.strip().lower() for s in skills_list.split(",")]
+    # matcher = build_skill_matcher(skills)
 
-    doc = nlp(resume_text.lower())
-    matches = matcher(doc)
-    matched_skills = set()
-    for match_id, start, end in matches:
-        span = doc[start:end]
-        matched_skills.add(span.text.title())  # Title case for display
+    # doc = nlp(resume_text.lower())
+    # matches = matcher(doc)
+    # matched_skills = set()
+    # for match_id, start, end in matches:
+    #     span = doc[start:end]
+    #     matched_skills.add(span.text.title())  # Title case for display
 
-    return list(matched_skills)
+    # return list(matched_skills)
+    return []
 
 
 def extract_missing_skills_ner(resume_text, jd_skills_text):
     """
     Using phrase matcher for extracting skills and finding missing ones from resume.
     """
-    jd_skills = set([s.strip().title() for s in jd_skills_text.split(",")])
-    resume_skills = set(extract_skills_phrase_match(resume_text, jd_skills_text))
-    missing_skills = jd_skills - resume_skills
-    return list(missing_skills)
+    # jd_skills = set([s.strip().title() for s in jd_skills_text.split(",")])
+    # resume_skills = set(extract_skills_phrase_match(resume_text, jd_skills_text))
+    # missing_skills = jd_skills - resume_skills
+    # return list(missing_skills)
+    return []
 
 
 # # For testing standalone
