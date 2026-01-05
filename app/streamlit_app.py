@@ -1,13 +1,12 @@
 import sys
 import os
-# Ensure scripts and components are discoverable
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import streamlit as st
 from io import StringIO
+import os
 from dotenv import load_dotenv
 
-# Import your custom modules
 from scripts.utils import (
     pdf_to_text,
     docx_to_text,
@@ -28,22 +27,12 @@ from scripts.suggest import (
 
 from components.circular_progress import st_circular_progress
 
-# --- 1. RENDER-SAFE INITIALIZATION ---
-load_dotenv() # Picks up variables from Render Dashboard automatically
+load_dotenv(os.path.join("scripts", ".env"))
+model = get_embedding_model()
 
-@st.cache_resource
-def load_model():
-    """Loads the model once and caches it to prevent memory crashes on Render."""
-    return get_embedding_model()
-
-# Show a spinner only during the very first load
-with st.spinner("Initializing AI Engine (this may take a minute on first boot)..."):
-    model = load_model()
-
-# --- 2. UI HEADER ---
 st.title("ATS Resume Ranker and Career Advisor")
 
-# --- 3. RESUME UPLOAD ---
+# Resume upload with change detection and chat clearing
 resume_file = st.file_uploader("Upload your Resume (TXT, PDF, DOCX)", type=['txt', 'pdf', 'docx'])
 if resume_file:
     if resume_file.type == 'application/pdf':
@@ -65,7 +54,7 @@ if resume_file:
 else:
     resume_text_area = ""
 
-# --- 4. JOB DESCRIPTION UPLOAD ---
+# Job description upload with change detection and chat clearing
 jd_file = st.file_uploader("Upload Job Description (TXT, PDF, DOCX)", type=['txt', 'pdf', 'docx'])
 if jd_file:
     if jd_file.type == 'application/pdf':
@@ -99,7 +88,6 @@ with st.expander("About ATS Scores and Suggestions 📊"):
 
 tab1, tab2 = st.tabs(["Scores & Suggestions", "Chat with AI"])
 
-# --- 5. TAB 1: ANALYSIS ---
 with tab1:
     if st.button("Analyze Resume"):
         if not resume_text_area or not new_jd_text:
@@ -108,11 +96,9 @@ with tab1:
             with st.spinner("Extracting skills and computing scores..."):
                 jd_skills_text = extract_skills_from_jd(new_jd_text)
                 required_skills = [s.strip() for s in jd_skills_text.split(",") if s.strip()]
-                # Note: extract_missing_skills_ner currently returns [] via the placeholder in skill_ner.py
                 missing_skills = extract_missing_skills_ner(resume_text_area, jd_skills_text)
                 matched_skills = list(set(required_skills) - set(missing_skills))
 
-                # Use the cached model
                 resume_embedding = model.encode([resume_text_area])[0]
                 jd_embedding = model.encode([new_jd_text])[0]
                 similarity_score = compute_cosine_similarity(resume_embedding, jd_embedding)
@@ -156,21 +142,21 @@ with tab1:
                     mime="text/plain",
                 )
             else:
-                st.success("No missing skills detected! Resume looks good based on the job description.")
+                st.success("No missing skills detected! Resume looks good based on provided job description.")
 
-# --- 6. TAB 2: AI CHAT ---
 with tab2:
     st.header("Ask AI about your Resume & Job Description")
 
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
+    # Only allow chat if both resume & JD exist
     if resume_text_area and new_jd_text:
         user_msg = st.text_input("Enter your question", key="chat_input")
         if user_msg:
             st.session_state.chat_history.append({"role": "user", "content": user_msg})
 
-            with st.spinner("AI is thinking..."):
+            with st.spinner("AI is thinking... generating response."):
                 prompt = (
                     f"Resume:\n{resume_text_area}\n\nJob Description:\n{new_jd_text}\n\nQuestion:\n{user_msg}\n"
                 )
@@ -182,3 +168,6 @@ with tab2:
     for chat in st.session_state.chat_history:
         role = "You" if chat["role"] == "user" else "AI"
         st.markdown(f"**{role}:** {chat['content']}")
+
+
+

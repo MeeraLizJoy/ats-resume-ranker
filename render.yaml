@@ -1,5 +1,0 @@
-services:
-  - type: web
-    name: ats-resume-ranker
-    env: docker
-    dockerfilePath: ./Dockerfile
