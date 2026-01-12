@@ -1,9 +1,11 @@
 # --- Core Framework ---
 flask
 flask-cors
+streamlit
 
 # --- Text Extraction & Parsing ---
 PyPDF2==3.0.1
+pdfplumber
 python-docx==1.1.0
 
 # --- The "Math" & Vector Layer ---
