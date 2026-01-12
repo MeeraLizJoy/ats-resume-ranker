@@ -1,10 +1,8 @@
 # --- Core Framework ---
-flask
-flask-cors
 streamlit
+gunicorn
 
 # --- Text Extraction & Parsing ---
-PyPDF2==3.0.1
 pdfplumber
 python-docx==1.1.0
 
