@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 class StatisticalAnalyzer:
     """
@@ -9,10 +9,9 @@ class StatisticalAnalyzer:
         # We use sublinear_tf to scale word counts logarithmatically.
         # This prevents a resume with 'Python' written 50 times from
         # unfairly dominating a resume with 'Python' written 5 times.
-        self.vectorizer = TfidfTransformer(
-            stop_words = 'english',
-            sublinear_tf = True,
-            use_ids = True
+        self.vectorizer = TfidfVectorizer(
+            stop_words='english',
+            sublinear_tf=True
         )
 
     def extract_top_keywords(self, texts, top_n = 20):
