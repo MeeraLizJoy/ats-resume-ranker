@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 class EmbeddingEngine:
-    def __init__(self, model_name: str = 'all_MiniLM-L6-v2'):
+    def __init__(self, model_name: str = 'all-MiniLM-L6-v2'):
         """
         Initializes the Transformer model.
         'all-MiniLM-L6-v2' is fast, balanced model mapping text to 38f dimentions.
