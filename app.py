@@ -30,16 +30,17 @@ with col2:
 if st.button("Analyze Resume"):
     if jd_text and uploaded_file:
         with st.spinner("Analyzing..."):
-            # 1. Save uploaded file temporarily to parse it
             temp_path = f"temp_{uploaded_file.name}"
             with open(temp_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
 
-            # 2. process 
-            raw_resume = parser.extract_text_from_pdf(temp_path)
+            # UPDATED: Use the universal dispatcher
+            raw_resume = parser.extract_text(temp_path)
+            
+            # The preprocessor now handles your original regex cleaning!
             clean_resume = " ".join(preprocessor.preprocess(raw_resume))
             clean_jd = " ".join(preprocessor.preprocess(jd_text))
-
+            
             scores = ranker.get_composite_score(clean_resume, clean_jd)
 
             # 3. Display Scores

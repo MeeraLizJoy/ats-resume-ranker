@@ -23,7 +23,8 @@ def main():
     
     # 3. The Pipeline: Parse -> Clean -> Math -> Explain
     print("[1/4] Extracting and Cleaning Text...")
-    raw_resume = parser.extract_text_from_pdf(resume_path)
+    # UPDATED: Use the universal dispatcher
+    raw_resume = parser.extract_text(resume_path) 
     clean_resume = " ".join(preprocessor.preprocess(raw_resume))
 
     with open(jd_path, 'r') as f:
