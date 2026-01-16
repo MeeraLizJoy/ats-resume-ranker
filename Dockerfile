@@ -18,7 +18,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run the download script to bake the model into the image
-RUN python download_model.py
+RUN python download_models.py
 
 # 6. Download the base spaCy model (used as a fallback)
 RUN python -m spacy download en_core_web_sm
