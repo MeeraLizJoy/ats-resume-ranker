@@ -2,15 +2,10 @@ services:
   - type: web
     name: ats-ranker-pro
     runtime: docker
-    plan: starter # Requires a paid plan for Persistent Disks
+    plan: free # Changed from starter to free
     envVars:
       - key: MY_API_KEY
-        sync: false # You will enter this manually in the Render Dashboard for safety
+        sync: false
       - key: RENDER
         value: "true"
-      - key: CHROMA_DB_PATH
-        value: "/data/chroma_db"
-    disk:
-      name: chroma-storage
-      mountPath: /data
-      sizeGB: 1
+      # We remove the disk section because Free doesn't support it
