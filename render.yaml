@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ats-ranker-pro
+    runtime: docker
+    plan: starter # Requires a paid plan for Persistent Disks
+    envVars:
+      - key: MY_API_KEY
+        sync: false # You will enter this manually in the Render Dashboard for safety
+      - key: RENDER
+        value: "true"
+      - key: CHROMA_DB_PATH
+        value: "/data/chroma_db"
+    disk:
+      name: chroma-storage
+      mountPath: /data
+      sizeGB: 1

@@ -1,0 +1,14 @@
+[
+    "Python", "Pthon", "Pythn", "Java", "JavaScript", "Javascript", "JS", "TypeScript", "TS",
+    "C++", "C#", "Golang", "Go Language", "Rust", "Swift", "Kotlin", "PHP", "Ruby", "Perl",
+    "React", "React.js", "Angular", "Vue.js", "Svelte", "Next.js", "Express.js", "Django",
+    "Flask", "FastAPI", "Spring Boot", "Hibernate", "Laravel", "Ruby on Rails",
+    "AWS", "Amazon Web Services", "Azure", "GCP", "Google Cloud", "Docker", "Kubernetes",
+    "K8s", "Terraform", "Ansible", "Jenkins", "CircleCI", "GitHub Actions", "Prometheus",
+    "MySQL", "PostgreSQL", "MongoDB", "Redis", "Cassandra", "DynamoDB", "SQLite", "Oracle",
+    "Machine Learning", "ML", "Deep Learning", "DL", "NLP", "Natural Language Processing",
+    "Computer Vision", "PyTorch", "TensorFlow", "Keras", "Scikit-Learn", "Pandas", "NumPy",
+    "Data Engineering", "Apache Spark", "Hadoop", "Kafka", "Airflow", "Snowflake", "Tableau",
+    "SQL", "NoSQL", "GraphQL", "REST API", "Microservices", "Serverless", "Unit Testing",
+    "Git", "Bitbucket", "Agile", "Scrum", "Kanban", "Jira", "Linux", "Unix", "Bash", "Shell"
+]
