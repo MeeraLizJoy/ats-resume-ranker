@@ -7,7 +7,7 @@ load_dotenv()
 class GeminiService:
     def __init__(self, model_name='gemini-2.0-flash'): 
         # The new SDK uses a centralized Client object
-        self.client = genai.Client(api_key=os.getenv("MY_API_KEY"))
+        self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
         self.model_id = model_name
 
     def generate_feedback(self, scores, resume_text, jd_text):

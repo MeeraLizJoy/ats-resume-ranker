@@ -8,10 +8,9 @@ from src.services.extractor import LocalSkillExtractor
 from src.services.coach_engine import ResumeCoach
 from src.utils.report_gen import generate_pdf_report, generate_chat_txt
 
-st.set_page_config(page_title="ATS Local Command Center", layout='wide')
+st.set_page_config(page_title="ATS AI Command Center", layout='wide')
 
 # --- 1. INITIALIZE SESSION STATE ---
-# Ensures data persists across reruns and avoids AttributeErrors
 if 'candidate_data' not in st.session_state:
     st.session_state.candidate_data = {}
 
@@ -22,7 +21,8 @@ if 'leaderboard' not in st.session_state:
     st.session_state.leaderboard = None
 
 @st.cache_resource
-def init_engines():
+def load_engines():
+    """Initializes all AI engines once and caches them."""
     return (
         ResumeParser(), 
         CompositeRanker(), 
@@ -31,20 +31,36 @@ def init_engines():
         ResumeCoach() 
     )
 
-parser, ranker, gemini, extractor, coach = init_engines()
+# --- 2. LAZY LOADING LOGIC ---
+# This prevents the app from crashing/timing out on first load by showing the UI 
+# before the heavy 4GB models are fully initialized in RAM.
+if 'engines_ready' not in st.session_state:
+    with st.spinner("🚀 Initializing AI Engines... Hugging Face is warming up the models (this may take 60s)."):
+        parser, ranker, gemini, extractor, coach = load_engines()
+        st.session_state.parser = parser
+        st.session_state.ranker = ranker
+        st.session_state.gemini = gemini
+        st.session_state.extractor = extractor
+        st.session_state.coach = coach
+        st.session_state.engines_ready = True
+else:
+    parser = st.session_state.parser
+    ranker = st.session_state.ranker
+    gemini = st.session_state.gemini
+    extractor = st.session_state.extractor
+    coach = st.session_state.coach
 
-# --- SIDEBAR ---
 # --- SIDEBAR ---
 with st.sidebar:
     st.header("⚙️ System Status")
     
-    # Check status safely
+    # Check status safely to handle Cloud vs Local environments
     try:
         status = coach.get_status()
         ollama_val = status.get('ollama', 'Not Found')
         device_val = status.get('device', 'CPU')
     except Exception:
-        ollama_val = "Not Found (Cloud Mode)"
+        ollama_val = "Cloud Mode (Gemini)"
         device_val = "CPU"
     
     st.write(f"**Ollama:** {ollama_val}")
@@ -68,7 +84,7 @@ uploaded_files = st.file_uploader("Upload Resumes (PDF)", type=['pdf'], accept_m
 if st.button("🚀 Rank All Resumes", type="primary", width="stretch"):
     if jd_text and uploaded_files:
         results = []
-        with st.spinner("Indexing Resumes & Analyzing Skills..."):
+        with st.spinner("Analyzing Resumes..."):
             # Index the JD into local vector store for RAG
             coach.add_jd_to_index(jd_text)
             
@@ -108,7 +124,7 @@ if st.button("🚀 Rank All Resumes", type="primary", width="stretch"):
 if st.session_state.leaderboard is not None:
     df = st.session_state.leaderboard
     st.subheader("📊 Candidate Rankings")
-    st.dataframe(df, width="stretch")
+    st.dataframe(df, use_container_width=True)
 
     selected_name = st.selectbox("Select Candidate for Analysis", df["Candidate"])
     
@@ -124,11 +140,10 @@ if st.session_state.leaderboard is not None:
             mime="application/pdf"
         )
 
-    # --- CHAT SECTION (Local Ollama RAG) ---
+    # --- CHAT SECTION ---
     st.divider()
     st.header(f"💬 Local Coach: {selected_name}")
     
-    # Display existing chat history
     for m in st.session_state.chat_history:
         with st.chat_message(m["role"]):
             st.markdown(m["content"])
@@ -136,16 +151,14 @@ if st.session_state.leaderboard is not None:
     prompt = st.chat_input("Ask: 'How can I improve this resume for the JD?'")
 
     if prompt:
-        # User Message
         st.chat_message("user").markdown(prompt)
         st.session_state.chat_history.append({"role": "user", "content": prompt})
     
-        # Assistant Message (Streaming from Ollama)
         with st.chat_message("assistant"):
             response_placeholder = st.empty()
             full_response = ""
             
-            # This calls your Local Ollama model via the ResumeCoach service
+            # Streaming response from the Coach Engine (Gemini in Cloud / Ollama in Local)
             for chunk in coach.query_stream(prompt, target_filename=selected_name):
                 full_response += chunk
                 response_placeholder.markdown(full_response + "▌")
@@ -159,8 +172,7 @@ if st.session_state.leaderboard is not None:
             label="💾 Save Chat Conversation",
             data=chat_txt,
             file_name=f"Coach_Chat_{selected_name}.txt",
-            mime="text/plain",
-            width="stretch"
+            mime="text/plain"
         )
 else:
     st.info("Upload resumes and paste a Job Description to start the ranking process.")

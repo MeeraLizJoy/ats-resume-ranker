@@ -24,15 +24,14 @@ class ResumeCoach:
         self.device = "mps" if torch.backends.mps.is_available() else "cpu"
 
         # --- CORRECT SWITCH LOGIC ---
-        self.is_cloud = os.getenv("RENDER") or os.getenv("RAILWAY_STATIC_URL")
+        self.is_cloud = os.getenv("RENDER") or os.getenv("SPACE_ID") or os.getenv("RAILWAY_STATIC_URL")
         
         if self.is_cloud:
-            # Cloud Deployment: Use Gemini + the baked-in Local Model
-            # We point model_name to the folder created by download_model.py
-            self.llm = Gemini(model_name="models/gemini-2.0-flash", api_key=os.getenv("MY_API_KEY"))
-            self.embed_model = HuggingFaceEmbedding(
-                model_name="./models/all-MiniLM-L6-v2" 
-            )
+            # Use the "Secret" name you will set in HF Settings
+            api_key = os.getenv("GEMINI_API_KEY") 
+            self.llm = Gemini(model_name="models/gemini-2.0-flash", api_key=api_key)
+            self.embed_model = HuggingFaceEmbedding(model_name="./models/all-MiniLM-L6-v2")
+            
         else:
             # Local Deployment: Use Ollama
             base_url = os.getenv("OLLAMA_BASE_URL", "http://host.docker.internal:11434")

@@ -27,10 +27,8 @@ RUN python download_models.py
 # 8. Download the spaCy model
 RUN python -m spacy download en_core_web_sm
 
-# 9. Expose the port Streamlit runs on
-EXPOSE 8501
+# 9. Hugging Face Spaces uses port 7860 by default
+EXPOSE 7860
 
-# 10. Define how to run the app
-# Using CMD instead of ENTRYPOINT is often more flexible on Render
-# 10. Define how to run the app with headless mode enabled
-CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true"]
+# 10. Run with the specific HF port and headless mode
+CMD ["streamlit", "run", "app.py", "--server.port", "7860", "--server.address", "0.0.0.0", "--server.headless", "true"]
