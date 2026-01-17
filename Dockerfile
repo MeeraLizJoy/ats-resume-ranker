@@ -32,4 +32,5 @@ EXPOSE 8501
 
 # 10. Define how to run the app
 # Using CMD instead of ENTRYPOINT is often more flexible on Render
-CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+# 10. Define how to run the app with headless mode enabled
+CMD ["streamlit", "run", "app.py", "--server.port", "8501", "--server.address", "0.0.0.0", "--server.headless", "true"]

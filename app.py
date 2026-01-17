@@ -34,12 +34,24 @@ def init_engines():
 parser, ranker, gemini, extractor, coach = init_engines()
 
 # --- SIDEBAR ---
+# --- SIDEBAR ---
 with st.sidebar:
     st.header("⚙️ System Status")
-    status = coach.get_status()
-    st.write(f"**Ollama:** {status['ollama']}")
-    st.write(f"**Hardware:** {status['device']}")
+    
+    # Check status safely
+    try:
+        status = coach.get_status()
+        ollama_val = status.get('ollama', 'Not Found')
+        device_val = status.get('device', 'CPU')
+    except Exception:
+        ollama_val = "Not Found (Cloud Mode)"
+        device_val = "CPU"
+    
+    st.write(f"**Ollama:** {ollama_val}")
+    st.write(f"**Hardware:** {device_val}")
+    
     st.divider()
+    
     if st.button("🗑️ Clear Local Database"):
         if os.path.exists("./chroma_db"):
             import shutil
