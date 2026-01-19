@@ -17,20 +17,21 @@ COPY requirements.txt .
 # 5. Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. NOW copy the rest of your project code 
-# This MUST happen before running download_models.py
-COPY download_models.py .
-
-# 7. Run the download script to bake the AI models into the image
-RUN python download_models.py
-
-# 8. Download the spaCy model
-RUN python -m spacy download en_core_web_sm
-
-# 9. Copy the rest of your app code
+# 6. Copy the entire project into the container
+# We do this NOW so that download_models.py has access to the folder structure
 COPY . .
 
-# 9. Hugging Face Spaces uses port 7860 by default
+# 7. Ensure the model output directory exists to prevent spacy [E050]
+RUN mkdir -p output/model-last
+
+# 8. Run the download script to bake the AI models into the image
+# This script will now create the files inside the existing output directory
+RUN python download_models.py
+
+# 9. Download the standard spaCy model as a fallback
+RUN python -m spacy download en_core_web_sm
+
+# 10. Hugging Face Spaces uses port 7860 by default
 EXPOSE 7860
 
 # Final stable command for Hugging Face
