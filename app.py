@@ -13,8 +13,17 @@ from src.utils.report_gen import generate_pdf_report, generate_chat_txt
 # --- 0. CONFIGURATION & DATABASE HELPERS ---
 REPO_ID = "meeralizjoy/ats-usage-logs"  # 👈 UPDATE THIS to your repo name
 FILE_NAME = "usage.json"
-HF_TOKEN = st.secrets.get("HF_TOKEN")
-api = HfApi(token=HF_TOKEN)
+
+try:
+    HF_TOKEN = st.secrets["HF_TOKEN"]
+except Exception:
+    HF_TOKEN = os.getenv("HF_TOKEN") # Fallback to environment variable
+
+if not HF_TOKEN:
+    st.warning("⚠️ HF_TOKEN not found in Secrets. Usage tracking will be disabled.")
+    api = None
+else:
+    api = HfApi(token=HF_TOKEN)
 
 def load_usage_data():
     try:
