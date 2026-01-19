@@ -1,0 +1,55 @@
+models/
+.locks/
+blobs/
+snapshots/
+*.safetensors
+*.lock
+
+
+.DS_Store
+.env
+__pycache__/
+temp_*
+*.pdf
+*.docx
+.ipynb_checkpoints/
+data/
+tests/gi
+
+
+# --- Local Databases & Large Storage ---
+chroma_db/
+data/*.spacy
+data/*.json
+
+# --- Python & Environment ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+
+# --- Operating System ---
+Thumbs.db
+
+# --- Logs & Temp ---
+*.log
+.streamlit/
+
+render.yaml
+test_model.py
+train_data.json
+augmented_train_data.json
+setup_nlp.sh
+base_config.cfg 
+config.cfg 
+Procfile
+scripts/
+output/model-best/
+.env.example
+main.py
+
+
+
+
