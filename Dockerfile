@@ -27,6 +27,9 @@ RUN python download_models.py
 # 8. Download the spaCy model
 RUN python -m spacy download en_core_web_sm
 
+# 9. Copy the rest of your app code
+COPY . .
+
 # 9. Hugging Face Spaces uses port 7860 by default
 EXPOSE 7860
 
