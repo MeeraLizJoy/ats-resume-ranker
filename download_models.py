@@ -1,22 +1,20 @@
 import os
-import spacy
 from sentence_transformers import SentenceTransformer
 
-# 1. Handle Sentence Transformer
-st_path = "./models/all-MiniLM-L6-v2"
-if not os.path.exists(st_path):
-    print("Downloading Sentence Transformer...")
-    model = SentenceTransformer('all-MiniLM-L6-v2')
-    model.save(st_path)
+# 1. Create the folders your app expects
+os.makedirs("./models/all-MiniLM-L6-v2", exist_ok=True)
+os.makedirs("./output/model-last", exist_ok=True)
 
-# 2. Handle the NER Model (The one causing the error)
-# Note: If this is a custom model you trained, you need to either 
-# commit it to Git LFS or have this script download it from a URL.
-# For now, let's at least create the directory so the app doesn't crash.
-ner_path = "./output/model-last"
-if not os.path.exists(ner_path):
-    os.makedirs(ner_path, exist_ok=True)
-    print(f"Created {ner_path} directory.")
-    # If you have a way to download your custom weights here, add it!
+# 2. Download the Sentence Transformer
+print("Downloading Sentence Transformer...")
+model = SentenceTransformer('all-MiniLM-L6-v2')
+model.save("./models/all-MiniLM-L6-v2")
+
+# 3. Create a dummy meta.json if it's missing (to stop the Spacy E053 error)
+# Note: You will eventually need to upload your real NER model files here
+meta_path = "./output/model-last/meta.json"
+if not os.path.exists(meta_path):
+    with open(meta_path, "w") as f:
+        f.write('{"lang":"en", "name":"last", "version":"0.0.0"}')
 
 print("Done!")

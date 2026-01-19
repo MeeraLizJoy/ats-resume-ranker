@@ -1,38 +1,34 @@
-# 1. Use a lightweight Python base image
 FROM python:3.10-slim
 
-# 2. Set the working directory inside the container
 WORKDIR /app
 
-# 3. Install system dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     curl \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# 4. Copy ONLY requirements first (for better caching)
+# Copy requirements and install
 COPY requirements.txt .
-
-# 5. Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 6. Copy the entire project into the container
-# We do this NOW so that download_models.py has access to the folder structure
-COPY . .
+# --- CRITICAL CHANGE ---
+# 1. Create the directories FIRST
+RUN mkdir -p /app/output/model-last /app/models
 
-# 7. Ensure the model output directory exists to prevent spacy [E050]
-RUN mkdir -p output/model-last
+# 2. Copy the download script
+COPY download_models.py .
 
-# 8. Run the download script to bake the AI models into the image
-# This script will now create the files inside the existing output directory
+# 3. Run the download script to fill the directories
 RUN python download_models.py
 
-# 9. Download the standard spaCy model as a fallback
+# 4. NOW copy the rest of the app code
+COPY . .
+
+# Download spaCy base model
 RUN python -m spacy download en_core_web_sm
 
-# 10. Hugging Face Spaces uses port 7860 by default
 EXPOSE 7860
 
-# Final stable command for Hugging Face
-CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0", "--server.enableXsrfProtection=false", "--server.enableCORS=false"]
+CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0"]
