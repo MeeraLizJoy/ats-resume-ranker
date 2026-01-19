@@ -32,3 +32,6 @@ google-genai
 python-dotenv
 plotly
 fpdf
+
+
+Authlib>=1.3.2

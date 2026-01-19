@@ -84,18 +84,27 @@ else:
 is_logged_in = st.user.get("is_logged_in", False)
 user_email = st.user.get("email") if is_logged_in else None
 
+# Use try-except here because st.user is only available on Streamlit Community Cloud or HF Spaces
+try:
+    is_logged_in = st.user.get("is_logged_in", False)
+    user_email = st.user.get("email") if is_logged_in else None
+except Exception:
+    is_logged_in = False
+    user_email = None
+
+# --- SIDEBAR ---
 # --- SIDEBAR ---
 with st.sidebar:
     st.header("👤 Account Status")
     if is_logged_in:
-        st.success(f"Welcome, {st.user.name}!")
+        st.success(f"Welcome!")
         usage_db = load_usage_data()
         user_count = usage_db.get(user_email, 0)
         st.write(f"**Lifetime Scans Used:** {user_count} / 2")
         if st.button("Log out"):
             st.logout()
     else:
-        st.info("🔓 Log in with Hugging Face to enable ranking and chat.")
+        st.info("🔓 Log in with Hugging Face to enable ranking.")
         if st.button("Log in"):
             st.login()
     
