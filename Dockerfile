@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 6. NOW copy the rest of your project code 
 # This MUST happen before running download_models.py
-COPY . .
+COPY download_models.py .
 
 # 7. Run the download script to bake the AI models into the image
 RUN python download_models.py
