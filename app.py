@@ -11,30 +11,15 @@ from src.services.coach_engine import ResumeCoach
 from src.utils.report_gen import generate_pdf_report, generate_chat_txt
 
 # --- BRIDGE HF OAUTH TO STREAMLIT ---
-# Using 'auth' because st.login() looks for st.secrets["auth"]
-try:
-    # Check if we need to inject the secrets manually
-    if "OAUTH_CLIENT_ID" in os.environ:
-        # Check if "auth" already exists safely
-        auth_exists = False
-        try:
-            auth_exists = "auth" in st.secrets
-        except:
-            auth_exists = False
-
-        if not auth_exists:
-            st.secrets.update({
-                "auth": {
-                    "client_id": os.environ["OAUTH_CLIENT_ID"],
-                    "client_secret": os.environ["OAUTH_CLIENT_SECRET"],
-                    "server_metadata_url": "https://huggingface.co/.well-known/openid-configuration",
-                    "cookie_secret": os.environ.get("OAUTH_COOKIE_SECRET", "at-least-32-characters-long-unique-string"),
-                    "redirect_uri": f"https://{os.environ.get('SPACE_ID', '').replace('/', '-')}.hf.space/oauth2callback"
-                }
-            })
-except Exception as e:
-    # If secrets can't be initialized, we print to logs but don't crash the whole app
-    print(f"Secret Bridge Info: {e}")
+if "OAUTH_CLIENT_ID" in os.environ:
+    # We define the auth configuration in a way that doesn't trigger a crash if st.secrets is locked
+    auth_config = {
+        "client_id": os.environ["OAUTH_CLIENT_ID"],
+        "client_secret": os.environ["OAUTH_CLIENT_SECRET"],
+        "server_metadata_url": "https://huggingface.co/.well-known/openid-configuration",
+        "cookie_secret": os.environ.get("OAUTH_COOKIE_SECRET", "at-least-32-characters-long-unique-string"),
+        "redirect_uri": f"https://{os.environ.get('SPACE_ID', '').replace('/', '-')}.hf.space/oauth2callback"
+    }
 
 # --- 0. CONFIGURATION & DATABASE HELPERS ---
 REPO_ID = "meeralizjoy/ats-usage-logs"  # 👈 UPDATE THIS to your repo name
